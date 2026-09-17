@@ -45,6 +45,15 @@ function Page() {
     ScrollTrigger.refresh()
   }, [loaded, lenis])
 
+  // Disabled links ("#") stay clickable-looking but must not jump the page to the top.
+  useEffect(() => {
+    const block = (e: MouseEvent) => {
+      if ((e.target as HTMLElement).closest?.('a[href="#"]')) e.preventDefault()
+    }
+    document.addEventListener('click', block)
+    return () => document.removeEventListener('click', block)
+  }, [])
+
   // Lazy images change section heights; re-measure once everything has settled.
   useEffect(() => {
     const refresh = () => ScrollTrigger.refresh()

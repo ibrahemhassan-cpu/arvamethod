@@ -91,8 +91,6 @@ export function HowToBegin() {
             <a
               key={path.title}
               href={path.href}
-              target="_blank"
-              rel="noreferrer"
               data-card
               data-tilt
               data-cursor-label="Explore"

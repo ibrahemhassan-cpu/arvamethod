@@ -1,4 +1,8 @@
-const SITE = 'https://www.arvamethod.com'
+/**
+ * Links to the main arvamethod.com site are intentionally disabled for now: every one renders as "#"
+ * and does nothing when clicked. The intended path is kept as the argument so they're easy to wire up later.
+ */
+const link = (_path: string) => '#'
 
 /**
  * Drop an MP4/WebM of the original hero footage in /public/videos and set its
@@ -8,22 +12,22 @@ export const HERO_VIDEO = ''
 export const HERO_POSTER = '/images/body-session.webp'
 
 export const nav = [
-  { label: 'Home', href: `${SITE}/`, image: '/images/body-session.webp' },
-  { label: 'About', href: `${SITE}/about`, image: '/images/arrabella-chair.webp' },
-  { label: 'Path Coaching', href: `${SITE}/path-coaching`, image: '/images/path.webp' },
-  { label: 'Bodywork', href: `${SITE}/bodywork`, image: '/images/bodywork.webp' },
-  { label: 'Blog & Recipes', href: `${SITE}/blog`, image: '/images/coffee-light.webp' },
-  { label: 'Contact', href: `${SITE}/contact`, image: '/images/arrabella-sofa.webp' },
+  { label: 'Home', href: link('/'), image: '/images/body-session.webp' },
+  { label: 'About', href: link('/about'), image: '/images/arrabella-chair.webp' },
+  { label: 'Path Coaching', href: link('/path-coaching'), image: '/images/path.webp' },
+  { label: 'Bodywork', href: link('/bodywork'), image: '/images/bodywork.webp' },
+  { label: 'Blog & Recipes', href: link('/blog'), image: '/images/coffee-light.webp' },
+  { label: 'Contact', href: link('/contact'), image: '/images/arrabella-sofa.webp' },
 ]
 
 export const links = {
-  quiz: `${SITE}/living-archetype-quiz`,
-  active: `${SITE}/active`,
-  path: `${SITE}/path-coaching`,
-  bodywork: `${SITE}/bodywork`,
-  body: `${SITE}/bodywork#arvamethod-body`,
-  about: `${SITE}/about`,
-  privacy: `${SITE}/privacy-policy`,
+  quiz: link('/living-archetype-quiz'),
+  active: link('/active'),
+  path: link('/path-coaching'),
+  bodywork: link('/bodywork'),
+  body: link('/bodywork#arvamethod-body'),
+  about: link('/about'),
+  privacy: link('/privacy-policy'),
 }
 
 export const contact = {
@@ -77,7 +81,7 @@ export const begin = {
       tag: 'Start here for free',
       text: 'The quiz reveals the hidden patterns shaping how you approach health, stress, and self-care — then offers a practical guide for beginning to affect holistic change in your own life.',
       image: '/images/quiz.webp',
-      href: `${SITE}/living-archetype-quiz`,
+      href: link('/living-archetype-quiz'),
       cta: 'Take the quiz',
     },
     {
@@ -85,7 +89,7 @@ export const begin = {
       tag: 'A different kind of support',
       text: 'A personalized virtual program for building sustainable habits, movement, and lifestyle foundations — grounded in the ARVAmethod philosophy and designed to fit how you actually live.',
       image: '/images/active.webp',
-      href: `${SITE}/active`,
+      href: link('/active'),
       cta: 'Explore ACTIVE',
     },
     {
@@ -93,7 +97,7 @@ export const begin = {
       tag: 'By application only',
       text: 'PATH is a long-term coaching relationship that works at the deepest level of the ARVAmethod — body, inner life, and daily existence brought into full alignment.',
       image: '/images/path.webp',
-      href: `${SITE}/path-coaching`,
+      href: link('/path-coaching'),
       cta: 'Apply for PATH',
     },
     {
@@ -101,7 +105,7 @@ export const begin = {
       tag: 'Chicago Studio',
       text: 'Clinical hands-on treatment rooted in 20 years of expertise. Medical and Sports massage, lymphatic therapy, and fascial work brought into dialogue with the whole person.',
       image: '/images/bodywork.webp',
-      href: `${SITE}/bodywork`,
+      href: link('/bodywork'),
       cta: 'Book bodywork',
     },
   ],

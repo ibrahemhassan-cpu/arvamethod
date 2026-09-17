@@ -119,8 +119,6 @@ export function Header({ visible, logoReady }: Props) {
             <Magnetic strength={0.2} className="hidden sm:inline-block">
               <a
                 href={links.quiz}
-                target="_blank"
-                rel="noreferrer"
                 data-cursor="hide"
                 className="group inline-flex items-center gap-2 rounded-full bg-gold py-3 pr-3 pl-5 text-[13px] font-semibold text-espresso"
               >
