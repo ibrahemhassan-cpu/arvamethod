@@ -4,7 +4,7 @@ import { useScrollTo } from '../components/SmoothScroll'
 import { HERO_POSTER, HERO_VIDEO, links } from '../lib/content'
 import { gsap, MOTION_OK, SplitText, useGSAP } from '../lib/gsap'
 
-export function Hero({ play }: { play: boolean }) {
+export function Hero({ play = false }: { play?: boolean }) {
   const root = useRef<HTMLElement>(null)
   const scrollTo = useScrollTo()
 

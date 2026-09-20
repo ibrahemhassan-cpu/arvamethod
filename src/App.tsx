@@ -5,30 +5,28 @@ import { Header } from './components/Header'
 import { Preloader } from './components/Preloader'
 import { SmoothScroll, useLenis } from './components/SmoothScroll'
 import { ScrollTrigger } from './lib/gsap'
-import { Breathe } from './sections/Breathe'
-import { Footer } from './sections/Footer'
-import { Hero } from './sections/Hero'
-import { HowToBegin } from './sections/HowToBegin'
-import { Manifesto } from './sections/Manifesto'
-import { Marquee } from './sections/Marquee'
-import { Philosophy } from './sections/Philosophy'
-import { SignatureSession } from './sections/SignatureSession'
-import { Social } from './sections/Social'
-import { Testimonials } from './sections/Testimonials'
-import { TheWork } from './sections/TheWork'
+import { resolveSection, sectionOrder, variantBackground, variants } from './variants/registry'
+import { VariantProvider } from './variants/VariantProvider'
+import { useVariant } from './variants/variantContext'
+import { VersionSwitcher } from './variants/VersionSwitcher'
+import { VersionTransition } from './variants/VersionTransition'
 
 export default function App() {
   return (
-    <SmoothScroll>
-      <Page />
-    </SmoothScroll>
+    <VariantProvider>
+      <SmoothScroll>
+        <Shell />
+      </SmoothScroll>
+    </VariantProvider>
   )
 }
 
-function Page() {
+function Shell() {
   const lenis = useLenis()
+  const { variant, variantFor, ready, epoch } = useVariant()
   const [revealed, setRevealed] = useState(false)
   const [loaded, setLoaded] = useState(false)
+  const [shown, setShown] = useState(0)
 
   const onReveal = useCallback(() => setRevealed(true), [])
   const onComplete = useCallback(() => setLoaded(true), [])
@@ -44,6 +42,12 @@ function Page() {
     lenis?.start()
     ScrollTrigger.refresh()
   }, [loaded, lenis])
+
+  // Theme hook for variant-specific base colours.
+  useEffect(() => {
+    document.documentElement.dataset.variant = String(variant)
+    document.documentElement.dataset.theme = variants[variant].theme
+  }, [variant])
 
   // Disabled links ("#") stay clickable-looking but must not jump the page to the top.
   useEffect(() => {
@@ -61,24 +65,40 @@ function Page() {
     return () => window.removeEventListener('load', refresh)
   }, [])
 
+  // Swap the page while the wipe covers the screen.
+  const swap = useCallback(() => {
+    setShown(epoch)
+    lenis?.scrollTo(0, { immediate: true })
+    window.scrollTo(0, 0)
+    requestAnimationFrame(() => ScrollTrigger.refresh())
+  }, [epoch, lenis])
+
+  // A variant can paint a fixed backdrop (V3's shader gradient) behind everything.
+  const backgrounds = ready
+    ? [...new Set(sectionOrder.map(variantFor))].map((id) => ({ id, Background: variantBackground(id) }))
+    : []
+
   return (
     <>
+      {backgrounds.map(({ id, Background }) => (Background ? <Background key={id} /> : null))}
       {!loaded && <Preloader onReveal={onReveal} onComplete={onComplete} />}
       <Header visible={revealed} logoReady={loaded} />
-      <main>
-        <Hero play={revealed} />
-        <Marquee className="bg-espresso text-cream" />
-        <Philosophy />
-        <TheWork />
-        <HowToBegin />
-        <SignatureSession />
-        <Testimonials />
-        <Manifesto />
-        <Breathe />
-        <Marquee className="border-y border-cream/10 bg-ink text-cream/90" reverse />
-        <Social />
+
+      <main key={shown}>
+        {ready &&
+          sectionOrder.map((id) => {
+            const Section = resolveSection(id, variantFor(id))
+            if (!Section) return null
+            return (
+              <div key={id} id={id} data-section={id}>
+                <Section play={id === 'hero' ? revealed : undefined} />
+              </div>
+            )
+          })}
       </main>
-      <Footer />
+
+      <VersionTransition epoch={epoch} variant={variant} onCover={swap} />
+      <VersionSwitcher />
       <Cursor />
       <Grain />
     </>

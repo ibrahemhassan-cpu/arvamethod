@@ -112,3 +112,9 @@ html.lenis body {
     transition-duration: 0.01ms !important;
   }
 }
+
+@keyframes spin-circle {
+  to {
+    transform: rotate(360deg);
+  }
+}

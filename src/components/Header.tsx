@@ -4,6 +4,8 @@ import { gsap, ScrollTrigger, useGSAP } from '../lib/gsap'
 import { ArrowIcon } from './Button'
 import { Magnetic } from './Magnetic'
 import { RollText } from './RollText'
+import { variants } from '../variants/registry'
+import { useVariant } from '../variants/variantContext'
 import { useLenis } from './SmoothScroll'
 
 const loadMenu = () => import('./MenuOverlay')
@@ -24,6 +26,9 @@ export function Header({ visible, logoReady }: Props) {
   const [pill, setPill] = useState<{ x: number; w: number } | null>(null)
   const lenis = useLenis()
   const progress = useRef<HTMLDivElement>(null)
+  const { variantFor } = useVariant()
+  // Follow whichever version owns the hero — in a mixed cut that's what sits under the bar.
+  const light = variants[variantFor('hero')].theme === 'light'
 
   useGSAP(() => {
     const setProgress = gsap.quickSetter(progress.current, 'scaleX')
@@ -72,7 +77,11 @@ export function Header({ visible, logoReady }: Props) {
       >
         <div
           className={`container-x relative flex items-center justify-between rounded-full py-2 transition-[background-color,box-shadow] duration-700 ${
-            scrolled && !open ? 'bg-espresso/90 shadow-[0_10px_40px_-12px_rgba(0,0,0,0.6)] ring-1 ring-cream/10' : ''
+            scrolled && !open
+              ? light
+                ? 'bg-cream-2/92 shadow-[0_10px_40px_-14px_rgba(36,28,25,0.35)] ring-1 ring-espresso/10'
+                : 'bg-espresso/90 shadow-[0_10px_40px_-12px_rgba(0,0,0,0.6)] ring-1 ring-cream/10'
+              : ''
           }`}
         >
           <a href={nav[0].href} aria-label="ARVAmethod home" data-cursor="hide" className="relative z-10 flex items-center">
@@ -96,11 +105,11 @@ export function Header({ visible, logoReady }: Props) {
             onMouseLeave={() => setPill(null)}
             className={`absolute left-1/2 hidden -translate-x-1/2 items-center rounded-full p-1.5 transition-[opacity,background-color] duration-500 lg:flex ${
               open ? 'pointer-events-none opacity-0' : ''
-            } ${scrolled ? '' : 'bg-ink/35 ring-1 ring-cream/10'}`}
+            } ${scrolled ? '' : light ? 'bg-espresso/6 ring-1 ring-espresso/10' : 'bg-ink/35 ring-1 ring-cream/10'}`}
           >
             <span
               aria-hidden
-              className="absolute top-1.5 bottom-1.5 left-0 rounded-full bg-cream transition-[translate,width,opacity] duration-500 ease-(--ease-expo)"
+              className={`absolute top-1.5 bottom-1.5 left-0 rounded-full transition-[translate,width,opacity] duration-500 ease-(--ease-expo) ${light ? 'bg-espresso' : 'bg-cream'}`}
               style={{ translate: `${pill?.x ?? 0}px 0`, width: pill?.w ?? 0, opacity: pill ? 1 : 0 }}
             />
             {nav.map((item) => (
@@ -108,7 +117,9 @@ export function Header({ visible, logoReady }: Props) {
                 key={item.label}
                 href={item.href}
                 onMouseEnter={(e) => setPill({ x: e.currentTarget.offsetLeft, w: e.currentTarget.offsetWidth })}
-                className="group relative px-4 py-2.5 text-[13px] font-medium tracking-wide text-cream/85 transition-colors duration-300 hover:text-espresso"
+                className={`group relative px-4 py-2.5 text-[13px] font-medium tracking-wide transition-colors duration-300 ${
+                  light ? 'text-espresso/80 hover:text-cream' : 'text-cream/85 hover:text-espresso'
+                }`}
               >
                 <RollText>{item.label}</RollText>
               </a>
@@ -137,7 +148,7 @@ export function Header({ visible, logoReady }: Props) {
                 aria-expanded={open}
                 aria-label={open ? 'Close menu' : 'Open menu'}
                 data-cursor="hide"
-                className="group grid size-12 place-items-center rounded-full bg-cream text-espresso"
+                className={`group grid size-12 place-items-center rounded-full ${light ? 'bg-espresso text-cream' : 'bg-cream text-espresso'}`}
               >
                 <span className="relative block h-3 w-5">
                   <span
