@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, MotionConfig } from 'motion/react'
 import { useState } from 'react'
 import { contact, nav, socials } from '../lib/content'
+import { PreviewControls } from './PreviewControls'
 import { RollText } from './RollText'
 
 const EASE = [0.76, 0, 0.24, 1] as const
@@ -62,7 +63,7 @@ function Overlay({ onClose }: { onClose: () => void }) {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.4 } }}
-            transition={{ duration: 1.2, ease: EASE_OUT, delay: 0.5 }}
+            transition={{ duration: 1.2, ease: EASE_OUT, delay: 0.7 }}
             className="relative ml-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-[2rem]"
           >
             <AnimatePresence initial={false}>
@@ -114,6 +115,17 @@ function Overlay({ onClose }: { onClose: () => void }) {
               ))}
             </div>
           </div>
+        </motion.div>
+
+        {/* Internal review controls — quiet on purpose */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0, transition: { duration: 0.2 } }}
+          transition={{ duration: 0.8, ease: EASE_OUT, delay: 1 }}
+          className="lg:col-span-12"
+        >
+          <PreviewControls onNavigate={onClose} />
         </motion.div>
       </motion.div>
     </motion.div>

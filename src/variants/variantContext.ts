@@ -1,13 +1,15 @@
 import { createContext, useContext } from 'react'
-import type { SectionId, VariantId } from './registry'
+import type { EditionSlug, Mix, SectionId, VariantId } from './registry'
 
-export type Mix = Partial<Record<SectionId, VariantId>>
+export type { Mix }
 
 export type VariantState = {
   variant: VariantId
+  /** Slug of the edition on screen, or null once the client has customised it. */
+  edition: EditionSlug | null
+  setEdition: (slug: EditionSlug) => void
   /** Per-section overrides; only set while the client is assembling their own cut. */
   mix: Mix
-  mixing: boolean
   /** Version used for a given section right now. */
   variantFor: (section: SectionId) => VariantId
   ready: boolean
@@ -15,7 +17,6 @@ export type VariantState = {
   epoch: number
   setVariant: (id: VariantId) => void
   setSectionVariant: (section: SectionId, id: VariantId) => void
-  setMixing: (on: boolean) => void
   resetMix: () => void
   /** Shareable URL that reproduces exactly what is on screen. */
   shareUrl: () => string

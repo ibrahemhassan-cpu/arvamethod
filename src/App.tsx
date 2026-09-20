@@ -5,10 +5,9 @@ import { Header } from './components/Header'
 import { Preloader } from './components/Preloader'
 import { SmoothScroll, useLenis } from './components/SmoothScroll'
 import { ScrollTrigger } from './lib/gsap'
-import { resolveSection, sectionOrder, variantBackground, variants } from './variants/registry'
+import { editionBySlug, resolveSection, sectionOrder, variantBackground, variants } from './variants/registry'
 import { VariantProvider } from './variants/VariantProvider'
 import { useVariant } from './variants/variantContext'
-import { VersionSwitcher } from './variants/VersionSwitcher'
 import { VersionTransition } from './variants/VersionTransition'
 
 export default function App() {
@@ -23,7 +22,7 @@ export default function App() {
 
 function Shell() {
   const lenis = useLenis()
-  const { variant, variantFor, ready, epoch } = useVariant()
+  const { variant, edition, variantFor, ready, epoch } = useVariant()
   const [revealed, setRevealed] = useState(false)
   const [loaded, setLoaded] = useState(false)
   const [shown, setShown] = useState(0)
@@ -43,11 +42,12 @@ function Shell() {
     ScrollTrigger.refresh()
   }, [loaded, lenis])
 
-  // Theme hook for variant-specific base colours.
+  // Theme hook for edition-specific base colours.
   useEffect(() => {
     document.documentElement.dataset.variant = String(variant)
-    document.documentElement.dataset.theme = variants[variant].theme
-  }, [variant])
+    document.documentElement.dataset.edition = edition ?? 'custom'
+    document.documentElement.dataset.theme = (edition && editionBySlug(edition)?.theme) ?? variants[variant].theme
+  }, [variant, edition])
 
   // Disabled links ("#") stay clickable-looking but must not jump the page to the top.
   useEffect(() => {
@@ -97,8 +97,7 @@ function Shell() {
           })}
       </main>
 
-      <VersionTransition epoch={epoch} variant={variant} onCover={swap} />
-      <VersionSwitcher />
+      <VersionTransition epoch={epoch} variant={variant} edition={edition} onCover={swap} />
       <Cursor />
       <Grain />
     </>
